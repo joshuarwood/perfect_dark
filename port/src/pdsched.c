@@ -110,6 +110,8 @@ s32 g_BlurFb = -1;
 s32 g_BlurFbCapTimer = -1;
 bool g_BlurFbDirty = true;
 
+s32 g_N64Lighting = false;
+
 void schedSetCrashEnable1(bool enable)
 {
 	g_SchedCrashEnable1 = enable;
@@ -418,7 +420,7 @@ void schedResetArtifacts(void)
  */
 void schedUpdatePendingArtifacts(void)
 {
-	if (false) {
+	if (g_N64Lighting) {
 		struct artifact *artifacts = NULL;
 		static f32 *current_depths = NULL;
 		static f32 *saved_depths = NULL;

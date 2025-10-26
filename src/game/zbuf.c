@@ -263,7 +263,7 @@ Gfx *zbufSaveArtifactDepths(Gfx *gdl)
 	if (samples);
 
 #else
-	if (false) {
+	if (g_N64Lighting) {
 		// Set scheduler flag so it knows we're saving depth information.
 		// The saved depth is compared against on-screen depth inside
 		// schedUpdatePendingArtifacts() once the render pipeline completes.

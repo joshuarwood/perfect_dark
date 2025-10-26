@@ -920,6 +920,20 @@ static MenuItemHandlerResult menuhandlerDisplayFPS(s32 operation, struct menuite
 	return 0;
 }
 
+static MenuItemHandlerResult menuhandlerN64Lighting(s32 operation, struct menuitem *item, union handlerdata *data)
+{
+	switch (operation) {
+	case MENUOP_GET:
+		return g_N64Lighting;
+	case MENUOP_SET:
+		g_N64Lighting = data->checkbox.value;
+		break;
+	}
+
+	return 0;
+}
+
+
 static MenuItemHandlerResult menuhandlerGeMuzzleFlashes(s32 operation, struct menuitem *item, union handlerdata *data)
 {
 	switch (operation) {
@@ -1075,6 +1089,15 @@ struct menuitem g_ExtendedVideoMenuItems[] = {
 		0,
 		menuhandlerDisplayFPS,
 	},
+	{
+		MENUITEMTYPE_CHECKBOX,
+		0,
+		MENUITEMFLAG_LITERAL_TEXT,
+		(uintptr_t)"N64 Lighting",
+		0,
+		menuhandlerN64Lighting,
+	},
+
 	{
 		MENUITEMTYPE_SEPARATOR,
 		0,

@@ -986,7 +986,7 @@ Gfx *bgRenderScene(Gfx *gdl)
 	RoomNum roomnums[60];
 
 #ifndef PLATFORM_N64
-	if (false)
+	if (g_N64Lighting)
 #endif
 	g_NumRoomsWithGlares = 0;
 
@@ -1210,7 +1210,7 @@ Gfx *bgRenderScene(Gfx *gdl)
 			gdl = propsRender(gdl, thing->roomnum, RENDERPASS_XLU, roomnumsbyprop);
 		}
 
-		if (!g_Vars.mplayerisrunning && false) {
+		if (!g_Vars.mplayerisrunning && g_N64Lighting) {
 			artifactsCalculateGlaresForRoom(thing->roomnum);
 
 			if (g_NumRoomsWithGlares < 100) {

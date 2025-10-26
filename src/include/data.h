@@ -559,6 +559,7 @@ extern s32 g_TickRateDiv;
 extern s32 g_TickExtraSleep;
 extern s32 g_MusicDisableMpDeath;
 extern s32 g_BgunGeMuzzleFlashes;
+extern s32 g_N64Lighting;
 extern s32 g_FileAutoSelect;
 
 extern u8 g_MpWeaponSetRandomFilters[NUM_MPWEAPONS];

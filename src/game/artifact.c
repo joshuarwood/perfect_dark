@@ -627,10 +627,10 @@ Gfx *artifactsRenderGlaresForRoom(Gfx *gdl, s32 roomnum)
 					}
 
 
-					if (difference <= tolerance && false) {
+					if (difference <= tolerance && g_N64Lighting) {
 						numgood++;
 					}
-					if (true) numgood += artifacts[k].visiblelos;
+					if (g_N64Lighting == false) numgood += artifacts[k].visiblelos;
 
 					artifacts[k].type = ARTIFACTTYPE_FREE;
 				}

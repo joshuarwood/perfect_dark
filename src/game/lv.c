@@ -1244,7 +1244,7 @@ Gfx *lvRender(Gfx *gdl)
 				handsTickAttack();
 #ifndef PLATFORM_N64
 				// glares calculated earlier on PC, before prop matrices turn into garbage
-				if (true) bgCalculateGlaresForVisibleRooms();
+				if (g_N64Lighting == false) bgCalculateGlaresForVisibleRooms();
 #endif
 
 				// Calculate lookingatprop
@@ -1790,7 +1790,7 @@ Gfx *lvRender(Gfx *gdl)
 	if (videoGetDisplayFPS()) {
 		gdl = lvRenderFPS(gdl);
 	}
-	if (false) {
+	if (g_N64Lighting) {
 		gDPCopyFramebufferEXT(gdl++, g_CurrentDepthFb[g_SchedDepthIndex], 0, 0, 0, G_ON, 1);
 	}
 #endif
