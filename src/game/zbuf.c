@@ -263,14 +263,16 @@ Gfx *zbufSaveArtifactDepths(Gfx *gdl)
 	if (samples);
 
 #else
-	// Set scheduler flag so it knows we're saving depth information.
-	// The saved depth is compared against on-screen depth inside
-	// schedUpdatePendingArtifacts() once the render pipeline completes.
-	g_SchedSpecialArtifactIndexes[g_SchedWriteArtifactsIndex] = 1;
-	// Flush pending draw calls to ensure the depth buffer is up-to-date
-	gDPFlushEXT(gdl++);
-	// Copy the current depth buffer to a framebuffer for safe keeping
-	gDPCopyFramebufferEXT(gdl++, g_SavedDepthFb[g_SchedDepthIndex], 0, 0, 0, G_ON, 1);
+	if (false) {
+		// Set scheduler flag so it knows we're saving depth information.
+		// The saved depth is compared against on-screen depth inside
+		// schedUpdatePendingArtifacts() once the render pipeline completes.
+		g_SchedSpecialArtifactIndexes[g_SchedWriteArtifactsIndex] = 1;
+		// Flush pending draw calls to ensure the depth buffer is up-to-date
+		gDPFlushEXT(gdl++);
+		// Copy the current depth buffer to a framebuffer for safe keeping
+		gDPCopyFramebufferEXT(gdl++, g_SavedDepthFb[g_SchedDepthIndex], 0, 0, 0, G_ON, 1);
+	}
 #endif
 	return gdl;
 }

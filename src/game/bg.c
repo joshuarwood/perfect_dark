@@ -985,6 +985,9 @@ Gfx *bgRenderScene(Gfx *gdl)
 	s16 roomorder[60];
 	RoomNum roomnums[60];
 
+#ifndef PLATFORM_N64
+	if (false)
+#endif
 	g_NumRoomsWithGlares = 0;
 
 	if (g_Vars.currentplayer->visionmode == VISIONMODE_XRAY) {
@@ -1207,7 +1210,7 @@ Gfx *bgRenderScene(Gfx *gdl)
 			gdl = propsRender(gdl, thing->roomnum, RENDERPASS_XLU, roomnumsbyprop);
 		}
 
-		if (!g_Vars.mplayerisrunning) {
+		if (!g_Vars.mplayerisrunning && false) {
 			artifactsCalculateGlaresForRoom(thing->roomnum);
 
 			if (g_NumRoomsWithGlares < 100) {
@@ -6404,3 +6407,25 @@ void bgFindEnteredRooms(struct coord *bbmin, struct coord *bbmax, RoomNum *rooms
 end:
 	rooms[len] = -1;
 }
+
+#ifndef PLATFORM_N64
+
+void bgCalculateGlaresForVisibleRooms(void)
+{
+	s32 i;
+
+	g_NumRoomsWithGlares = 0;
+
+	if (!g_Vars.mplayerisrunning) {
+		for (i = 1; i < g_Vars.roomcount; i++) {
+			if (g_Rooms[i].flags & ROOMFLAG_ONSCREEN) {
+				artifactsCalculateGlaresForRoom(i);
+				if (g_NumRoomsWithGlares < 100) {
+					g_GlareRooms[g_NumRoomsWithGlares++] = i;
+				}
+			}
+		}
+	}
+}
+
+#endif

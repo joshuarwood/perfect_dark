@@ -626,9 +626,11 @@ Gfx *artifactsRenderGlaresForRoom(Gfx *gdl, s32 roomnum)
 						difference = expecteddepth - actualdepth;
 					}
 
-					if (difference <= tolerance) {
+
+					if (difference <= tolerance && false) {
 						numgood++;
 					}
+					if (true) numgood += artifacts[k].visiblelos;
 
 					artifacts[k].type = ARTIFACTTYPE_FREE;
 				}

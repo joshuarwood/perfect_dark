@@ -1242,6 +1242,10 @@ Gfx *lvRender(Gfx *gdl)
 				propsSort();
 				autoaimTick();
 				handsTickAttack();
+#ifndef PLATFORM_N64
+				// glares calculated earlier on PC, before prop matrices turn into garbage
+				if (true) bgCalculateGlaresForVisibleRooms();
+#endif
 
 				// Calculate lookingatprop
 				if (PLAYERCOUNT() == 1
@@ -1786,7 +1790,9 @@ Gfx *lvRender(Gfx *gdl)
 	if (videoGetDisplayFPS()) {
 		gdl = lvRenderFPS(gdl);
 	}
-	gDPCopyFramebufferEXT(gdl++, g_CurrentDepthFb[g_SchedDepthIndex], 0, 0, 0, G_ON, 1);
+	if (false) {
+		gDPCopyFramebufferEXT(gdl++, g_CurrentDepthFb[g_SchedDepthIndex], 0, 0, 0, G_ON, 1);
+	}
 #endif
 
 #if VERSION < VERSION_NTSC_1_0

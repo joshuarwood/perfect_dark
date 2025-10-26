@@ -418,63 +418,65 @@ void schedResetArtifacts(void)
  */
 void schedUpdatePendingArtifacts(void)
 {
-	struct artifact *artifacts = NULL;
-	static f32 *current_depths = NULL;
-	static f32 *saved_depths = NULL;
-	s32 i;
-	u32 width, height;
+	if (false) {
+		struct artifact *artifacts = NULL;
+		static f32 *current_depths = NULL;
+		static f32 *saved_depths = NULL;
+		s32 i;
+		u32 width, height;
 
-	// Synchronize the GPU depth buffers for this frame into memory
-	// accessible to the CPU. This process is asynchronous and finishes
-	// in the background of the next frame to avoid stalling the pipeline.
-	videoSyncDepth(g_CurrentDepthFb[g_SchedDepthIndex]);
+		// Synchronize the GPU depth buffers for this frame into memory
+		// accessible to the CPU. This process is asynchronous and finishes
+		// in the background of the next frame to avoid stalling the pipeline.
+		videoSyncDepth(g_CurrentDepthFb[g_SchedDepthIndex]);
 
-	if (g_SchedSpecialArtifactIndexes[g_SchedPendingArtifactsIndex] == 1) {
-		videoSyncDepth(g_SavedDepthFb[g_SchedDepthIndex]);
-	}
-
-	// Retrieve the GPU depth buffers from the previous frame since
-	// the depth buffers should be available to the CPU now.
-	current_depths = videoMapPixelbuffer(g_CurrentDepthFb[!g_SchedDepthIndex], &width, &height);
-
-	s32 prev_SchedPendingArtifactsIndex = g_SchedPendingArtifactsIndex ? g_SchedPendingArtifactsIndex - 1 : 2;
-	if (g_SchedSpecialArtifactIndexes[prev_SchedPendingArtifactsIndex] == 1) {
-		saved_depths = videoMapPixelbuffer(g_SavedDepthFb[!g_SchedDepthIndex], NULL, NULL);
-	}
-
-	// Compute N64 integer depth values for light artifacts in
-	// the previous frame using retrieved depth values
-	artifacts = g_ArtifactLists[prev_SchedPendingArtifactsIndex];
-	for (i = 0; i < MAX_ARTIFACTS; i++) {
-
-		struct artifact *artifact = &artifacts[i];
-		u32 pixel = width * artifact->screeny + artifact->screenx;
-
-		if (artifact->type != ARTIFACTTYPE_FREE) {
-
-			// Get the current depth value for this artifact's pixel from the on-screen depth buffer.
-			// This value will be a floating point number from 0 (near plane) to 1 (far plane).
-			f32 current_depth = current_depths[pixel];
-
-			// When available, update the current depth using the saved depth
-			if (g_SchedSpecialArtifactIndexes[prev_SchedPendingArtifactsIndex] == 1) {
-				f32 saved_depth = saved_depths[pixel];
-				if (saved_depth < current_depth)
-					current_depth = saved_depth;
-			}
-
-			// Convert floating point value to the integer depth used by N64
-			artifact->actualdepth = floatToN64Depth(32704.0f * current_depth);
+		if (g_SchedSpecialArtifactIndexes[g_SchedPendingArtifactsIndex] == 1) {
+			videoSyncDepth(g_SavedDepthFb[g_SchedDepthIndex]);
 		}
-	}
-	if (g_SchedSpecialArtifactIndexes[prev_SchedPendingArtifactsIndex] == 1) {
-		g_SchedSpecialArtifactIndexes[prev_SchedPendingArtifactsIndex] = 0;
-		videoUnmapPixelbuffer(g_SavedDepthFb[!g_SchedDepthIndex]);
-	}
-	videoUnmapPixelbuffer(g_CurrentDepthFb[!g_SchedDepthIndex]);
 
+		// Retrieve the GPU depth buffers from the previous frame since
+		// the depth buffers should be available to the CPU now.
+		current_depths = videoMapPixelbuffer(g_CurrentDepthFb[!g_SchedDepthIndex], &width, &height);
+
+		s32 prev_SchedPendingArtifactsIndex = g_SchedPendingArtifactsIndex ? g_SchedPendingArtifactsIndex - 1 : 2;
+		if (g_SchedSpecialArtifactIndexes[prev_SchedPendingArtifactsIndex] == 1) {
+			saved_depths = videoMapPixelbuffer(g_SavedDepthFb[!g_SchedDepthIndex], NULL, NULL);
+		}
+
+		// Compute N64 integer depth values for light artifacts in
+		// the previous frame using retrieved depth values
+		artifacts = g_ArtifactLists[prev_SchedPendingArtifactsIndex];
+		for (i = 0; i < MAX_ARTIFACTS; i++) {
+
+			struct artifact *artifact = &artifacts[i];
+			u32 pixel = width * artifact->screeny + artifact->screenx;
+
+			if (artifact->type != ARTIFACTTYPE_FREE) {
+
+				// Get the current depth value for this artifact's pixel from the on-screen depth buffer.
+				// This value will be a floating point number from 0 (near plane) to 1 (far plane).
+				f32 current_depth = current_depths[pixel];
+
+				// When available, update the current depth using the saved depth
+				if (g_SchedSpecialArtifactIndexes[prev_SchedPendingArtifactsIndex] == 1) {
+					f32 saved_depth = saved_depths[pixel];
+					if (saved_depth < current_depth)
+						current_depth = saved_depth;
+				}
+
+				// Convert floating point value to the integer depth used by N64
+				artifact->actualdepth = floatToN64Depth(32704.0f * current_depth);
+			}
+		}
+		if (g_SchedSpecialArtifactIndexes[prev_SchedPendingArtifactsIndex] == 1) {
+			g_SchedSpecialArtifactIndexes[prev_SchedPendingArtifactsIndex] = 0;
+			videoUnmapPixelbuffer(g_SavedDepthFb[!g_SchedDepthIndex]);
+		}
+		videoUnmapPixelbuffer(g_CurrentDepthFb[!g_SchedDepthIndex]);
+
+		schedIncrementDepthIndex();
+	}
 	schedIncrementPendingArtifacts();
-	schedIncrementDepthIndex();
 }
 
 void schedConsiderScreenshot(void)
