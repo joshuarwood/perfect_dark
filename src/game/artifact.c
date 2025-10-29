@@ -207,6 +207,31 @@ bool artifactTestLos(struct coord *spec, struct coord *roompos, s32 xi, s32 yi)
 	return shotTestLos(&gunpos2d, &gundir2d, &gunpos3d, &gundir3d, &endpos);
 }
 
+void artifactAdjustCoord(s32 roomnum, s32 lightnum, struct coord *coord)
+{
+	/**
+	 * Method to adjust light positions so they
+	 * play nice with the line-of-sight test
+	 */
+	switch (g_Vars.stagenum) {
+		case 51:
+			if ((roomnum == 21 || roomnum == 46 || roomnum == 47 ||
+			     roomnum == 52 || roomnum == 53 || roomnum == 62 ||
+			     roomnum == 71 || roomnum == 73 || roomnum == 74 ||
+			     roomnum == 75 || roomnum == 76 || roomnum == 77 ||
+			     roomnum == 98) && lightnum == 0) {
+				coord->y -= 0.11;
+			} else if (roomnum == 80 && lightnum == 3) {
+				coord->x -= 0.11;
+				coord->z += 0.11;
+			}
+			break;
+		default:
+			break;
+	}
+}
+
+
 #endif
 
 void artifactsCalculateGlaresForRoom(s32 roomnum)
@@ -287,6 +312,8 @@ void artifactsCalculateGlaresForRoom(s32 roomnum)
 
 				tmp = roomlights[i].dirx * roomlights[i].dirx + roomlights[i].diry * roomlights[i].diry + roomlights[i].dirz * roomlights[i].dirz;
 				f16 = spc4.f[0] * spc4.f[0] + spc4.f[1] * spc4.f[1] + spc4.f[2] * spc4.f[2];
+				printf("stage %d room %d light %d dist %.2f\n",
+				       g_Vars.stagenum, roomnum, i, f16);
 
 				if (tmp > 0.0001f && f16 > 0.0001f) {
 					sp190 = -((roomlights[i].dirx * spc4.f[0] + roomlights[i].diry * spc4.f[1] + roomlights[i].dirz * spc4.f[2]) / sqrtf(tmp * f16));
@@ -436,6 +463,7 @@ void artifactsCalculateGlaresForRoom(s32 roomnum)
 
 								if (index < MAX_ARTIFACTS) {
 #ifndef PLATFORM_N64
+									artifactAdjustCoord(roomnum, i, &spec);
 									artifact->visiblelos = artifactTestLos(&spec, &g_BgRooms[roomnum].pos, xi, yi);
 #endif
 									/**
