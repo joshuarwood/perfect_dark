@@ -4809,7 +4809,7 @@ void chrDamage(struct chrdata *chr, f32 damage, struct coord *vector, struct gse
 						g_Vars.currentplayer->bondhealth = 0;
 					}
 
-					g_Vars.currentplayer->bondhealth -= amount / healthscale;
+					//g_Vars.currentplayer->bondhealth -= amount / healthscale;
 
 					chr->lastattacker = (aprop ? aprop->chr : NULL);
 

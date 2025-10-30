@@ -992,6 +992,7 @@ bool shotTestLos(struct coord *gunpos2d, struct coord *gundir2d, struct coord *g
 	RoomNum spb8[8];
 	RoomNum *roomsptr;
 	struct prop *prop;
+	bool bg_hit = false, prop_hit = false;
 
 	shotdata.gunpos3d.x = gunpos3d->x;
 	shotdata.gunpos3d.y = gunpos3d->y;
@@ -1032,6 +1033,7 @@ bool shotTestLos(struct coord *gunpos2d, struct coord *gundir2d, struct coord *g
 	roomsptr = rooms;
 
 	while (*roomsptr != -1) {
+		//printf("adding room %d\n", *roomsptr);
 		roomsptr++;
 	}
 
@@ -1040,12 +1042,26 @@ bool shotTestLos(struct coord *gunpos2d, struct coord *gundir2d, struct coord *g
 
 	// Check for BG hits first
 	for (i = 0; rooms[i] != -1; i++) {
+		if (g_Vars.stagenum == 51 && rooms[i] == 100) {
+			// skip BG test during final cutscene of the dataDyne Research
+			// level since the camera clip through the wall, which will
+			// incorrectly remove lights when Dr Carroll first appears.
+			continue;
+		}
 		if (bgTestHitInRoom(&shotdata.gunpos3d, endpos3d, rooms[i], &sp664)) {
 			// check if it's far enough away from the end point
+			printf("hit (%.1f, %.1f, %.1f) end (%.1f, %.1f, %.1f) delta (%.2f, %.2f, %.2f)\n",
+			       sp664.pos.x, sp664.pos.y, sp664.pos.z,
+			       endpos3d->x, endpos3d->y, endpos3d->z,
+			       fabsf(sp664.pos.x - endpos3d->x),
+			       fabsf(sp664.pos.y - endpos3d->y),
+			       fabsf(sp664.pos.z - endpos3d->z));
+
 			if (fabsf(sp664.pos.x - endpos3d->x) >= 0.1f ||
 					fabsf(sp664.pos.y - endpos3d->y) >= 0.1f ||
 					fabsf(sp664.pos.z - endpos3d->z) >= 0.1f) {
-				return false;
+				//return false;
+				bg_hit = true;
 			}
 		}
 	}
@@ -1064,22 +1080,27 @@ bool shotTestLos(struct coord *gunpos2d, struct coord *gundir2d, struct coord *g
 			if (prop->type == PROPTYPE_CHR
 					|| (prop->type == PROPTYPE_PLAYER && prop->chr && (g_Vars.in_cutscene || playermgrGetPlayerNumByProp(prop) != g_Vars.currentplayernum))) {
 				chrTestHit(prop, &shotdata, false, true);
+				//printf("chrTestHit %d\n", shotdata.hits[0].prop != NULL);
 			} else if (prop->type == PROPTYPE_WEAPON || prop->type == PROPTYPE_DOOR
 					|| (prop->type == PROPTYPE_OBJ && prop->obj->type != OBJTYPE_GLASS && prop->obj->type != OBJTYPE_TINTEDGLASS)) {
 				objTestHit(prop, &shotdata);
+				//printf("objTestHit %d\n", shotdata.hits[0].prop != NULL);
 			}
 			if (shotdata.hits[0].prop) {
 				// ignore some glass parts and shields
 				if (shotdata.hits[0].slowsbullet && shotdata.hits[0].hitthing.texturenum != 10000) {
-					return false;
+					prop_hit = true;
+					//return false;
 				}
 			}
 		}
 		propptr--;
 	}
 
+	printf("TestLos BG %d, Prop %d\n", bg_hit, prop_hit);
 	// did not hit anything
-	return true;
+	//return true;
+	return prop_hit == false && bg_hit == false;
 }
 
 #endif

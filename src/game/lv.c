@@ -1244,7 +1244,8 @@ Gfx *lvRender(Gfx *gdl)
 				handsTickAttack();
 #ifndef PLATFORM_N64
 				// glares calculated earlier on PC, before prop matrices turn into garbage
-				if (g_N64Lighting == false) bgCalculateGlaresForVisibleRooms();
+				//gDPFlushEXT(gdl++);
+				//if (g_N64Lighting == false) bgCalculateGlaresForVisibleRooms();
 #endif
 
 				// Calculate lookingatprop
@@ -1368,6 +1369,7 @@ Gfx *lvRender(Gfx *gdl)
 
 				propsTestForPickup();
 
+				if (g_N64Lighting == false) bgCalculateGlaresForVisibleRooms();
 				gdl = bgRender(gdl);
 				chr0f028498(var80075d68 == 15 || g_AnimHostEnabled);
 				gdl = propsRenderBeams(gdl);

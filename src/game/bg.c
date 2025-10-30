@@ -93,6 +93,7 @@ u32 g_BgSection3;
 struct room *g_Rooms;
 u8 *g_MpRoomVisibility;
 RoomNum g_BgForceOnscreenRooms[350];
+s32 prev_stage = -1;
 s32 g_BgNumForceOnscreenRooms;
 u16 g_BgUnloadDelay240;
 u16 g_BgUnloadDelay240_2;
@@ -5956,8 +5957,10 @@ s32 bgGetForceOnscreenRooms(RoomNum *rooms, s32 len)
 {
 	s32 i;
 
+	//printf("GetForceOnscreenRooms (num %d)\n", g_BgNumForceOnscreenRooms);
 	for (i = 0; i < g_BgNumForceOnscreenRooms && i < len; i++) {
 		rooms[i] = g_BgForceOnscreenRooms[i];
+                printf("forcing room %d index %d\n", rooms[i], i);
 	}
 
 	rooms[i] = -1;
@@ -6410,11 +6413,43 @@ end:
 
 #ifndef PLATFORM_N64
 
+void bgLightLocations(void)
+{
+	s32 roomnum, lightnum, numlights, i;
+        struct light *roomlights;
+
+        char fname[1024];
+        sprintf(fname, "stage_%d.txt", g_Vars.stagenum);
+	FILE *f = fopen(fname, "w");
+
+	for (roomnum = 1; roomnum < g_Vars.roomcount; roomnum++) {
+		bgLoadRoom(roomnum);
+		numlights = g_Rooms[roomnum].gfxdata->numlights;
+	        roomlights = (struct light *)&g_BgLightsFileData[g_Rooms[roomnum].gfxdata->lightsindex * 0x22];
+		for (lightnum = 0; lightnum < numlights; lightnum++) {
+		for (i=0; i<4; i++) {
+			fprintf(f, "stage %2d room %2d light %2d index %d x %7.2f y %7.2f z %7.2f\n",
+			       g_Vars.stagenum, roomnum, lightnum, i,
+			       roomlights[lightnum].bbox[i].x + g_BgRooms[roomnum].pos.f[0],
+			       roomlights[lightnum].bbox[i].y + g_BgRooms[roomnum].pos.f[1],
+			       roomlights[lightnum].bbox[i].z + g_BgRooms[roomnum].pos.f[2]);
+		}
+		}
+	}
+	fclose(f);
+}
+
+
 void bgCalculateGlaresForVisibleRooms(void)
 {
 	s32 i;
 
 	g_NumRoomsWithGlares = 0;
+
+	if (g_Vars.stagenum != prev_stage) {
+		bgLightLocations();
+		prev_stage = g_Vars.stagenum;
+	}
 
 	if (!g_Vars.mplayerisrunning) {
 		for (i = 1; i < g_Vars.roomcount; i++) {

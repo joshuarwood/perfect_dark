@@ -200,6 +200,10 @@ bool artifactTestLos(struct coord *spec, struct coord *roompos, s32 xi, s32 yi)
 	struct coord gunpos2d = {{ 0.f, 0.f, 0.f }};
 	struct coord gundir3d;
 	struct coord gunpos3d = g_Vars.currentplayer->cam_pos;
+	printf("cam_pos %.2f %.2f %.2f\n",
+	       gunpos3d.x,
+	       gunpos3d.y,
+	       gunpos3d.z);
 	f32 crosspos[2] = { (f32)xi, (f32)yi };
 	cam0f0b4c3c(crosspos, &gundir2d, 1.f);
 	mtx4RotateVec(camGetProjectionMtxF(), &gundir2d, &gundir3d);
@@ -465,6 +469,11 @@ void artifactsCalculateGlaresForRoom(s32 roomnum)
 #ifndef PLATFORM_N64
 									artifactAdjustCoord(roomnum, i, &spec);
 									artifact->visiblelos = artifactTestLos(&spec, &g_BgRooms[roomnum].pos, xi, yi);
+						float myx = 0.25 * (roomlights[i].bbox[0].x + roomlights[i].bbox[1].x + roomlights[i].bbox[2].x + roomlights[i].bbox[3].x);
+						float myy = 0.25 * (roomlights[i].bbox[0].y + roomlights[i].bbox[1].y + roomlights[i].bbox[2].y + roomlights[i].bbox[3].y);
+						float myz = 0.25 * (roomlights[i].bbox[0].z + roomlights[i].bbox[1].z + roomlights[i].bbox[2].z + roomlights[i].bbox[3].z);
+									printf("artifact[%d] (x %d, y %d) stage %d room %d light %d [%.2f, %.2f, %.2f] visible %d\n",
+									       index, xi, yi, g_Vars.stagenum, roomnum, i, myx, myy, myz, artifact->visiblelos);
 #endif
 									/**
 									 * the original game performs artifact depth comparison
@@ -589,6 +598,7 @@ Gfx *artifactsRenderGlaresForRoom(Gfx *gdl, s32 roomnum)
 		return gdl;
 	}
 
+	//printf("rendering glares for room %d\n", roomnum);
 	for (i = envGetCurrent()->numsuns * 8; i < MAX_ARTIFACTS; i++) {
 		struct light *light2 = artifacts[i].light;
 		count = 0;
@@ -760,6 +770,10 @@ Gfx *artifactsRenderGlaresForRoom(Gfx *gdl, s32 roomnum)
 						spd4[0] = f24;
 						spd4[1] = f26;
 
+						float myx = 0.25 * (light->bbox[0].x + light->bbox[1].x + light->bbox[2].x + light->bbox[3].x);
+						float myy = 0.25 * (light->bbox[0].y + light->bbox[1].y + light->bbox[2].y + light->bbox[3].y);
+						float myz = 0.25 * (light->bbox[0].z + light->bbox[1].z + light->bbox[2].z + light->bbox[3].z);
+						printf("rendering room %d light pos %.2f %.2f %.2f\n", roomnum, myx, myy, myz);
 						func0f0b2740(&gdl, spdc, spd4, 64, 64, false, false, false, 1);
 
 						if (extra) {
