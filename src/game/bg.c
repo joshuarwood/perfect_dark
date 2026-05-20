@@ -4370,7 +4370,9 @@ bool bgTestHitOnChr(struct model *model, struct coord *arg1, struct coord *arg2,
 			 * net impact on N64 is extra CPU usage. We could skip
 			 * this on PC to obtain the correct min/max values.
 			 */
+#ifdef PLATFORM_N64
 			ptr += 3;
+#endif
 
 			for (i = spdc; i < spd8; i++) {
 				if (ptr[0] < min.x) {
