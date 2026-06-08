@@ -1236,7 +1236,8 @@ Gfx *bgRenderArtifacts(Gfx *gdl)
 {
 	s32 i;
 
-	if (g_Vars.mplayerisrunning == false && g_NumRoomsWithGlares > 0) {
+	//if (g_Vars.mplayerisrunning == false && g_NumRoomsWithGlares > 0) { // TODO: Add toggle option
+	if (g_NumRoomsWithGlares > 0) {
 		gdl = artifactsConfigureForGlares(gdl);
 
 		for (i = 0; i < g_NumRoomsWithGlares; i++) {
@@ -6428,7 +6429,8 @@ void bgCalculateGlaresForVisibleRooms(void)
 	// surfaces before testing for light obstructions
 	g_BgHitXluDisabled = true;
 
-	if (!g_Vars.mplayerisrunning) {
+	//if (!g_Vars.mplayerisrunning) { // TODO: Add toggle option
+	if (true) {
 		for (i = 1; i < g_Vars.roomcount; i++) {
 			if (g_Rooms[i].flags & ROOMFLAG_ONSCREEN) {
 				artifactsCalculateGlaresForRoom(i);
