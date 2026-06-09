@@ -75,11 +75,11 @@ s32 g_ViCurVStart1;
 u32 var8008de14;
 OSTimer g_SchedRspTimer;
 u32 g_SchedDpCounters[4];
-struct artifact g_ArtifactLists[3][120];
+struct artifact g_ArtifactLists[4][3][120];
 u8 g_SchedSpecialArtifactIndexes[3];
-s32 g_SchedWriteArtifactsIndex;
-s32 g_SchedFrontArtifactsIndex;
-s32 g_SchedPendingArtifactsIndex;
+s32 g_SchedWriteArtifactsIndex[4];
+s32 g_SchedFrontArtifactsIndex[4];
+s32 g_SchedPendingArtifactsIndex[4];
 
 bool g_SchedCrashedUnexpectedly = false;
 bool g_SchedCrashEnable1 = false;
@@ -311,10 +311,13 @@ void schedInitArtifacts(void)
 {
 	s32 i;
 	s32 j;
+	s32 player;
 
 	for (i = 0; i < 3; i++) {
 		for (j = 0; j < MAX_ARTIFACTS; j++) {
-			g_ArtifactLists[i][j].type = ARTIFACTTYPE_FREE;
+			for (player = 0; player < 4; player++) {
+				g_ArtifactLists[player][i][j].type = ARTIFACTTYPE_FREE;
+			}
 		}
 
 		g_SchedSpecialArtifactIndexes[i] = 0;
@@ -327,7 +330,7 @@ void schedInitArtifacts(void)
  */
 struct artifact *schedGetWriteArtifacts(void)
 {
-	return g_ArtifactLists[g_SchedWriteArtifactsIndex];
+	return g_ArtifactLists[g_Vars.currentplayernum][g_SchedWriteArtifactsIndex[g_Vars.currentplayernum]];
 }
 
 /**
@@ -337,7 +340,7 @@ struct artifact *schedGetWriteArtifacts(void)
  */
 struct artifact *schedGetFrontArtifacts(void)
 {
-	return g_ArtifactLists[g_SchedFrontArtifactsIndex];
+	return g_ArtifactLists[g_Vars.currentplayernum][g_SchedFrontArtifactsIndex[g_Vars.currentplayernum]];
 }
 
 /**
@@ -347,34 +350,36 @@ struct artifact *schedGetFrontArtifacts(void)
  */
 struct artifact *schedGetPendingArtifacts(void)
 {
-	return g_ArtifactLists[g_SchedPendingArtifactsIndex];
+	return g_ArtifactLists[g_Vars.currentplayernum][g_SchedPendingArtifactsIndex[g_Vars.currentplayernum]];
 }
 
 void schedIncrementWriteArtifacts(void)
 {
-	g_SchedWriteArtifactsIndex = (g_SchedWriteArtifactsIndex + 1) % 3;
+	g_SchedWriteArtifactsIndex[g_Vars.currentplayernum] = (g_SchedWriteArtifactsIndex[g_Vars.currentplayernum] + 1) % 3;
 }
 
 void schedIncrementFrontArtifacts(void)
 {
-	g_SchedFrontArtifactsIndex = (g_SchedFrontArtifactsIndex + 1) % 3;
+	g_SchedFrontArtifactsIndex[g_Vars.currentplayernum] = (g_SchedFrontArtifactsIndex[g_Vars.currentplayernum] + 1) % 3;
 }
 
 void schedIncrementPendingArtifacts(void)
 {
-	g_SchedPendingArtifactsIndex = (g_SchedPendingArtifactsIndex + 1) % 3;
+	g_SchedPendingArtifactsIndex[g_Vars.currentplayernum] = (g_SchedPendingArtifactsIndex[g_Vars.currentplayernum] + 1) % 3;
 }
 
 void schedResetArtifacts(void)
 {
-	g_SchedWriteArtifactsIndex = 0;
-	g_SchedFrontArtifactsIndex = 1;
-	g_SchedPendingArtifactsIndex = 0;
+	for (s32 player = 0; player < 4; player++) {
+		g_SchedWriteArtifactsIndex[player] = 0;
+		g_SchedFrontArtifactsIndex[player] = 1;
+		g_SchedPendingArtifactsIndex[player] = 0;
+	}
 }
 
 void schedUpdatePendingArtifacts(void)
 {
-	g_SchedSpecialArtifactIndexes[g_SchedPendingArtifactsIndex] = 0;
+	g_SchedSpecialArtifactIndexes[g_SchedPendingArtifactsIndex[g_Vars.currentplayernum]] = 0;
 	schedIncrementPendingArtifacts();
 }
 
