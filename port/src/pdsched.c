@@ -25,6 +25,7 @@
 #include "audio.h"
 #include "input.h"
 #include "mixer.h"
+#include "system.h"
 
 /*
  * private typedefs and defines
@@ -105,6 +106,8 @@ s32 g_PrevFrameFb = -1;
 s32 g_BlurFb = -1;
 s32 g_BlurFbCapTimer = -1;
 bool g_BlurFbDirty = true;
+
+u8 *g_LightTable[4] = {NULL, NULL, NULL, NULL};
 
 void schedSetCrashEnable1(bool enable)
 {
@@ -370,10 +373,22 @@ void schedIncrementPendingArtifacts(void)
 
 void schedResetArtifacts(void)
 {
+	s32 numlights = 0;
+	for (s32 i = 1; i < g_Vars.roomcount; i++) {
+		numlights += g_Rooms[i].numlights;
+	}
+
 	for (s32 player = 0; player < 4; player++) {
 		g_SchedWriteArtifactsIndex[player] = 0;
 		g_SchedFrontArtifactsIndex[player] = 1;
 		g_SchedPendingArtifactsIndex[player] = 0;
+
+		if (g_LightTable[player]) {
+			sysMemFree(g_LightTable[player]);
+		}
+		if (numlights > 0) {
+			g_LightTable[player] = (u8 *)sysMemZeroAlloc(ALIGN16(numlights * 3));
+		}
 	}
 }
 
@@ -407,4 +422,15 @@ void schedConsiderScreenshot(void)
 	if (g_MenuData.screenshottimer >= 2) {
 		g_MenuData.screenshottimer--;
 	}
+}
+
+u8 *schedGetLightTable(void)
+{
+	/**
+	 * Return the table which tracks brightness values
+	 * for light artifacts. This is used to smooth the transition
+	 * between visible and non-visible light states so that
+	 * it looks more natural than a binary on/off.
+	 */
+	return g_LightTable[g_Vars.currentplayernum];
 }
