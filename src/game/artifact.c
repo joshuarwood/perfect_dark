@@ -580,6 +580,10 @@ Gfx *artifactsRenderGlaresForRoom(Gfx *gdl, s32 roomnum)
 #ifdef PLATFORM_N64
 				s3 = &var800a41a0[lightindex * 3];
 #else
+				/**
+				 * Use scheduler to handle per-player light tables on PC.
+				 * This allows light artifacts to be used in splitscreen.
+				 */
 				s3 = &schedGetLightTable()[lightindex * 3];
 #endif
 				numgood = 0;
