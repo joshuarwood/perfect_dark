@@ -25,6 +25,7 @@
 #include "audio.h"
 #include "input.h"
 #include "mixer.h"
+#include "system.h"
 
 /*
  * private typedefs and defines
@@ -75,11 +76,11 @@ s32 g_ViCurVStart1;
 u32 var8008de14;
 OSTimer g_SchedRspTimer;
 u32 g_SchedDpCounters[4];
-struct artifact g_ArtifactLists[4][3][120];
+struct artifact g_ArtifactLists[MAX_PLAYERS][3][120];
 u8 g_SchedSpecialArtifactIndexes[3];
-s32 g_SchedWriteArtifactsIndex[4];
-s32 g_SchedFrontArtifactsIndex[4];
-s32 g_SchedPendingArtifactsIndex[4];
+s32 g_SchedWriteArtifactsIndex[MAX_PLAYERS];
+s32 g_SchedFrontArtifactsIndex[MAX_PLAYERS];
+s32 g_SchedPendingArtifactsIndex[MAX_PLAYERS];
 
 bool g_SchedCrashedUnexpectedly = false;
 bool g_SchedCrashEnable1 = false;
@@ -105,6 +106,8 @@ s32 g_PrevFrameFb = -1;
 s32 g_BlurFb = -1;
 s32 g_BlurFbCapTimer = -1;
 bool g_BlurFbDirty = true;
+
+u8 *g_LightTable[4] = {NULL, NULL, NULL, NULL};
 
 void schedSetCrashEnable1(bool enable)
 {
@@ -315,7 +318,7 @@ void schedInitArtifacts(void)
 
 	for (i = 0; i < 3; i++) {
 		for (j = 0; j < MAX_ARTIFACTS; j++) {
-			for (player = 0; player < 4; player++) {
+			for (player = 0; player < MAX_PLAYERS; player++) {
 				g_ArtifactLists[player][i][j].type = ARTIFACTTYPE_FREE;
 			}
 		}
@@ -370,10 +373,22 @@ void schedIncrementPendingArtifacts(void)
 
 void schedResetArtifacts(void)
 {
-	for (s32 player = 0; player < 4; player++) {
+	s32 numlights = 0;
+	for (s32 i = 1; i < g_Vars.roomcount; i++) {
+		numlights += g_Rooms[i].numlights;
+	}
+
+	for (s32 player = 0; player < MAX_PLAYERS; player++) {
 		g_SchedWriteArtifactsIndex[player] = 0;
 		g_SchedFrontArtifactsIndex[player] = 1;
 		g_SchedPendingArtifactsIndex[player] = 0;
+
+		if (g_LightTable[player]) {
+			sysMemFree(g_LightTable[player]);
+		}
+		if (numlights > 0) {
+			g_LightTable[player] = (u8 *)sysMemZeroAlloc(ALIGN16(numlights * 3));
+		}
 	}
 }
 
@@ -407,4 +422,16 @@ void schedConsiderScreenshot(void)
 	if (g_MenuData.screenshottimer >= 2) {
 		g_MenuData.screenshottimer--;
 	}
+}
+
+u8 *schedGetLightTable(void)
+{
+	/**
+	 * Return the table which tracks brightness values
+	 * for light artifacts. This is used to smooth the transition
+	 * between visible and non-visible light states so that
+	 * it looks more natural than a binary on/off. Do this
+	 * on a per-player basis so that it works in splitscreen.
+	 */
+	return g_LightTable[g_Vars.currentplayernum];
 }

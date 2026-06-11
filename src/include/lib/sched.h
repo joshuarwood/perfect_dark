@@ -25,5 +25,8 @@ void schedConsiderScreenshot(void);
 void schedSetCrashedUnexpectedly(bool enable);
 void schedStartFrame(OSSched *sc);
 void schedEndFrame(OSSched *sc);
+#ifndef PLATFORM_N64
+u8 *schedGetLightTable(void);
+#endif
 
 #endif
