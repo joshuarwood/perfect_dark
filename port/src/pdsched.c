@@ -430,7 +430,8 @@ u8 *schedGetLightTable(void)
 	 * Return the table which tracks brightness values
 	 * for light artifacts. This is used to smooth the transition
 	 * between visible and non-visible light states so that
-	 * it looks more natural than a binary on/off.
+	 * it looks more natural than a binary on/off. Do this
+	 * on a per-player basis so that it works in splitscreen.
 	 */
 	return g_LightTable[g_Vars.currentplayernum];
 }
