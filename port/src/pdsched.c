@@ -76,11 +76,11 @@ s32 g_ViCurVStart1;
 u32 var8008de14;
 OSTimer g_SchedRspTimer;
 u32 g_SchedDpCounters[4];
-struct artifact g_ArtifactLists[4][3][120];
+struct artifact g_ArtifactLists[MAX_PLAYERS][3][120];
 u8 g_SchedSpecialArtifactIndexes[3];
-s32 g_SchedWriteArtifactsIndex[4];
-s32 g_SchedFrontArtifactsIndex[4];
-s32 g_SchedPendingArtifactsIndex[4];
+s32 g_SchedWriteArtifactsIndex[MAX_PLAYERS];
+s32 g_SchedFrontArtifactsIndex[MAX_PLAYERS];
+s32 g_SchedPendingArtifactsIndex[MAX_PLAYERS];
 
 bool g_SchedCrashedUnexpectedly = false;
 bool g_SchedCrashEnable1 = false;
@@ -318,7 +318,7 @@ void schedInitArtifacts(void)
 
 	for (i = 0; i < 3; i++) {
 		for (j = 0; j < MAX_ARTIFACTS; j++) {
-			for (player = 0; player < 4; player++) {
+			for (player = 0; player < MAX_PLAYERS; player++) {
 				g_ArtifactLists[player][i][j].type = ARTIFACTTYPE_FREE;
 			}
 		}
@@ -378,7 +378,7 @@ void schedResetArtifacts(void)
 		numlights += g_Rooms[i].numlights;
 	}
 
-	for (s32 player = 0; player < 4; player++) {
+	for (s32 player = 0; player < MAX_PLAYERS; player++) {
 		g_SchedWriteArtifactsIndex[player] = 0;
 		g_SchedFrontArtifactsIndex[player] = 1;
 		g_SchedPendingArtifactsIndex[player] = 0;
