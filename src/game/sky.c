@@ -2576,8 +2576,11 @@ Gfx *skyRenderSuns(Gfx *gdl, bool xray)
 	env = envGetCurrent();
 
 	xscale = 1;
-
+#ifdef PLATFORM_N64
 	if (env->numsuns <= 0 || !g_ZbufPtr1 || g_Vars.mplayerisrunning) {
+#else
+	if (env->numsuns <= 0 || !g_ZbufPtr1 || (g_Vars.mplayerisrunning && g_SplitscreenGlares == false)) {
+#endif
 		return gdl;
 	}
 
@@ -3050,7 +3053,11 @@ Gfx *skyRenderArtifacts(Gfx *gdl)
 		gdl = skyRenderTeleportFlares(gdl);
 	}
 
+#ifdef PLATFORM_N64
 	if (env->numsuns <= 0 || !g_ZbufPtr1 || g_Vars.mplayerisrunning) {
+#else
+	if (env->numsuns <= 0 || !g_ZbufPtr1 || (g_Vars.mplayerisrunning && g_SplitscreenGlares == false)) {
+#endif
 		return gdl;
 	}
 
