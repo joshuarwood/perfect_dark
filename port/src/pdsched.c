@@ -107,7 +107,7 @@ s32 g_BlurFb = -1;
 s32 g_BlurFbCapTimer = -1;
 bool g_BlurFbDirty = true;
 
-u8 *g_LightTable[4] = {NULL, NULL, NULL, NULL};
+u8 *g_LightTable[MAX_PLAYERS] = {NULL, NULL, NULL, NULL};
 
 void schedSetCrashEnable1(bool enable)
 {
@@ -374,8 +374,11 @@ void schedIncrementPendingArtifacts(void)
 void schedResetArtifacts(void)
 {
 	s32 numlights = 0;
-	for (s32 i = 1; i < g_Vars.roomcount; i++) {
-		numlights += g_Rooms[i].numlights;
+
+	if (g_Vars.stagenum != STAGE_TITLE) {
+		for (s32 i = 1; i < g_Vars.roomcount; i++) {
+			numlights += g_Rooms[i].numlights;
+		}
 	}
 
 	for (s32 player = 0; player < MAX_PLAYERS; player++) {
