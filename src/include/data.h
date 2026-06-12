@@ -401,7 +401,11 @@ extern struct hatposition var8007dae4[1][6];
 extern f32 g_SkyCloudOffset;
 extern f32 g_SkyWindSpeed;
 extern f32 g_SunAlphaFracs[];
+#ifdef PLATFORM_N64
 extern s32 g_SunFlareTimers240[];
+#else
+extern s32 *g_SunFlareTimers240;
+#endif
 extern u32 var8007dba0;
 extern u32 var8007dbb8;
 extern u32 var8007dbd0;

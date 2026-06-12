@@ -26,7 +26,8 @@ void schedSetCrashedUnexpectedly(bool enable);
 void schedStartFrame(OSSched *sc);
 void schedEndFrame(OSSched *sc);
 #ifndef PLATFORM_N64
-u8 *schedGetLightTable(void);
+u8 *schedGetPlayerLightTable(void);
+s32 *schedGetPlayerSunTimers(void);
 #endif
 
 #endif

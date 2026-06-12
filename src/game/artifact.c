@@ -251,6 +251,7 @@ void artifactsCalculateGlaresForRoom(s32 roomnum)
 	if (videoGetGlareBrightness() <= 0.f) {
 		return;
 	}
+	var800a41a0 = schedGetPlayerLightTable();
 #endif
 
 	if (g_Rooms[roomnum].gfxdata != NULL && g_Rooms[roomnum].loaded240) {
@@ -258,11 +259,7 @@ void artifactsCalculateGlaresForRoom(s32 roomnum)
 
 		if (numlights != 0) {
 			roomlights = (struct light *)&g_BgLightsFileData[g_Rooms[roomnum].gfxdata->lightsindex * 0x22];
-#ifdef PLATFORM_N64
 			s1 = &var800a41a0[g_Rooms[roomnum].gfxdata->lightsindex * 3];
-#else
-			s1 = &schedGetLightTable()[g_Rooms[roomnum].gfxdata->lightsindex * 3];
-#endif
 
 			roomPopulateMtx(&sp138, roomnum);
 			mtx00015f88(bgGetScaleBg2Gfx(), &sp138);
@@ -577,15 +574,7 @@ Gfx *artifactsRenderGlaresForRoom(Gfx *gdl, s32 roomnum)
 		if (count > 0) {
 			if (roomnum == light->roomnum) {
 				lightindex = ((uintptr_t)light - (uintptr_t)g_BgLightsFileData) / sizeof(struct light);
-#ifdef PLATFORM_N64
 				s3 = &var800a41a0[lightindex * 3];
-#else
-				/**
-				 * Use scheduler to handle per-player light tables on PC.
-				 * This allows light artifacts to be used in splitscreen.
-				 */
-				s3 = &schedGetLightTable()[lightindex * 3];
-#endif
 				numgood = 0;
 				min = 0xffff;
 				max = 0;
