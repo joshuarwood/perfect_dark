@@ -389,6 +389,7 @@ void schedResetArtifacts(void)
 
 		if (g_LightTable[player]) {
 			sysMemFree(g_LightTable[player]);
+			g_LightTable[player] = NULL;
 		}
 		if (numlights > 0) {
 			g_LightTable[player] = (u8 *)sysMemZeroAlloc(ALIGN16(numlights * 3));
