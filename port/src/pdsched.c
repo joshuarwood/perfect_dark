@@ -107,7 +107,8 @@ s32 g_BlurFb = -1;
 s32 g_BlurFbCapTimer = -1;
 bool g_BlurFbDirty = true;
 
-u8 *g_LightTable[4] = {NULL, NULL, NULL, NULL};
+u8 *g_LightTable[MAX_PLAYERS] = {NULL, NULL, NULL, NULL};
+s32 g_SunFlareTimers[MAX_PLAYERS][3] = {0};
 
 void schedSetCrashEnable1(bool enable)
 {
@@ -374,8 +375,11 @@ void schedIncrementPendingArtifacts(void)
 void schedResetArtifacts(void)
 {
 	s32 numlights = 0;
-	for (s32 i = 1; i < g_Vars.roomcount; i++) {
-		numlights += g_Rooms[i].numlights;
+
+	if (g_Vars.stagenum != STAGE_TITLE) {
+		for (s32 i = 1; i < g_Vars.roomcount; i++) {
+			numlights += g_Rooms[i].numlights;
+		}
 	}
 
 	for (s32 player = 0; player < MAX_PLAYERS; player++) {
@@ -385,6 +389,7 @@ void schedResetArtifacts(void)
 
 		if (g_LightTable[player]) {
 			sysMemFree(g_LightTable[player]);
+			g_LightTable[player] = NULL;
 		}
 		if (numlights > 0) {
 			g_LightTable[player] = (u8 *)sysMemZeroAlloc(ALIGN16(numlights * 3));
@@ -424,7 +429,7 @@ void schedConsiderScreenshot(void)
 	}
 }
 
-u8 *schedGetLightTable(void)
+u8 *schedGetPlayerLightTable(void)
 {
 	/**
 	 * Return the table which tracks brightness values
@@ -434,4 +439,13 @@ u8 *schedGetLightTable(void)
 	 * on a per-player basis so that it works in splitscreen.
 	 */
 	return g_LightTable[g_Vars.currentplayernum];
+}
+
+s32 *schedGetPlayerSunTimers(void)
+{
+	/**
+	 * Return the timers which handle Sun brightness timing.
+	 * Do this on a per-player basis so that it works in splitscreen.
+	 */
+	return g_SunFlareTimers[g_Vars.currentplayernum];
 }
