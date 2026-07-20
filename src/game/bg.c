@@ -137,7 +137,7 @@ u16 g_BgFrameCount = 0xfffe;
 s32 g_BgNumPortalCameraCacheItems = 0;
 #ifndef PLATFORM_N64
 bool g_BgHitXluDisabled = false;
-s32 g_SplitscreenGlares = false;
+s32 g_SplitscreenGlares = true;
 #endif
 
 void bgUnpausePropsInRoom(u32 roomnum, bool tintedglassonly)
