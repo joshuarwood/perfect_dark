@@ -376,7 +376,7 @@ void schedResetArtifacts(void)
 {
 	s32 numlights = 0;
 
-	if (g_Vars.stagenum != STAGE_TITLE) {
+	if (g_Vars.stagenum < STAGE_TITLE && g_Rooms != NULL) {
 		for (s32 i = 1; i < g_Vars.roomcount; i++) {
 			numlights += g_Rooms[i].numlights;
 		}
