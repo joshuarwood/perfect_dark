@@ -1424,6 +1424,7 @@ MenuItemHandlerResult endscreenHandleDeathLoadCheckpoint(s32 operation, struct m
 {
 	if (operation == MENUOP_SET) {
 		savestateRequestLoad();
+		menuStop();
 	}
 
 	return 0;
