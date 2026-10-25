@@ -209,7 +209,7 @@ static void savestateSave(void)
 		g_Vars.bond->bondhealth, (u32)(total / 1024), (u32)((sysGetMicroseconds() - t0) / 1000));
 
 	// after the copy, so the message is not part of the checkpoint itself
-	hudmsgCreate("Checkpoint Saved", HUDMSGTYPE_DEFAULT);
+	hudmsgCreate("Checkpoint Saved\n", HUDMSGTYPE_DEFAULT);
 }
 
 static void savestateLoad(void)
@@ -268,7 +268,7 @@ static void savestateLoad(void)
 		g_StageNum, g_Vars.lvframenum, g_Vars.bond->prop->pos.x, g_Vars.bond->prop->pos.y, g_Vars.bond->prop->pos.z,
 		g_Vars.bond->bondhealth, (u32)((sysGetMicroseconds() - t0) / 1000));
 
-	hudmsgCreate("Checkpoint Loaded", HUDMSGTYPE_DEFAULT);
+	hudmsgCreate("Checkpoint Loaded\n", HUDMSGTYPE_DEFAULT);
 }
 
 void savestateTick(void)
