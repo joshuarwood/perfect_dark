@@ -4375,6 +4375,7 @@ MenuItemHandlerResult menuhandlerLoadCheckpoint(s32 operation, struct menuitem *
 		break;
 	case MENUOP_SET:
 		savestateRequestLoad();
+		menuStop();
 		break;
 	}
 
