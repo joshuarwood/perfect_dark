@@ -539,15 +539,15 @@ void patchInit(void)
 		{ 0,  4,  0, -1,  0, 4 }, // 12th yellow light from base of diagonal elevator
 		{ 0,  5,  0, -1,  0, 4 }, // 11th yellow light from base of diagonal elevator
 		{ 0,  6,  0, -1,  0, 4 }, // 10th yellow light from base of diagonal elevator
-		{ 0,  7,  0, -1,  0, 4 }, // 9th yellow light from base of diagonal elevator
-		{ 0,  8,  0, -1,  0, 4 }, // 8th yellow light from base of diagonal elevator
-		{ 0,  9,  0, -1,  0, 4 }, // 7th yellow light from base of diagonal elevator
-		{ 0, 10,  0, -1,  0, 4 }, // 6th yellow light from base of diagonal elevator
-		{ 0, 11,  0, -1,  0, 4 }, // 5th yellow light from base of diagonal elevator
-		{ 0, 12,  0, -1,  0, 4 }, // 4th yellow light from base of diagonal elevator
-		{ 0, 13,  0, -1,  0, 4 }, // 3rd yellow light from base of diagonal elevator
-		{ 0, 14,  0, -1,  0, 4 }, // 2nd yellow light from base of diagonal elevator
-		{ 0, 15,  0, -1,  0, 4 }, // 1st yellow light at base of diagonal evelator
+		{ 0,  7,  0, -1,  0, 4 }, //  9th yellow light from base of diagonal elevator
+		{ 0,  8,  0, -1,  0, 4 }, //  8th yellow light from base of diagonal elevator
+		{ 0,  9,  0, -1,  0, 4 }, //  7th yellow light from base of diagonal elevator
+		{ 0, 10,  0, -1,  0, 4 }, //  6th yellow light from base of diagonal elevator
+		{ 0, 11,  0, -1,  0, 4 }, //  5th yellow light from base of diagonal elevator
+		{ 0, 12,  0, -1,  0, 4 }, //  4th yellow light from base of diagonal elevator
+		{ 0, 13,  0, -1,  0, 4 }, //  3rd yellow light from base of diagonal elevator
+		{ 0, 14,  0, -1,  0, 4 }, //  2nd yellow light from base of diagonal elevator
+		{ 0, 15,  0, -1,  0, 4 }, //  1st yellow light at bottom of diagonal evelator
 		{ 0, 45,  0, -1,  0, 4 }, // 20th yellow light at top of diagonal elevator
 		{ 0, 46,  0, -1,  0, 4 }, // 19th yellow light from base of diagonal elevator
 		{ 0, 47,  0, -1,  0, 4 }, // 18th yellow light from base of diagonal elevator
