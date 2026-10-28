@@ -1077,8 +1077,8 @@ bool shotTestLos(struct coord *gunpos2d, struct coord *gundir2d, struct coord *g
 			if (shotdata.hits[0].prop) {
 				texturenum = (prop->type == PROPTYPE_CHR || prop->type == PROPTYPE_PLAYER) ? -1 : shotdata.hits[0].hitthing.texturenum;
 				surfacetype = (texturenum >= 0 && texturenum < NUM_TEXTURES) ? g_Textures[texturenum].surfacetype : SURFACETYPE_DEFAULT;
-				// ignore some glass parts and shields
-				if (shotdata.hits[0].slowsbullet && texturenum != 10000 && texturenum != 0x61 &&
+				// ignore some glass parts, metal gratings, and shields
+				if (shotdata.hits[0].slowsbullet && texturenum != 10000 && texturenum != 0x61 && texturenum != 0x654 &&
 				    surfacetype != SURFACETYPE_GLASS && surfacetype != SURFACETYPE_GLASSXLU) {
 					return false;
 				}
